@@ -42,6 +42,9 @@
     [rightBtn addTarget:self action:@selector(openPhotoShop) forControlEvents:UIControlEventTouchUpInside];
     UIBarButtonItem *rightBbi = [[UIBarButtonItem alloc] initWithCustomView:rightBtn];
     self.navigationItem.rightBarButtonItem = rightBbi;
+    
+    //kvo
+    [_bgIV addObserver:self forKeyPath:@"hidden" options:NSKeyValueObservingOptionNew context:nil];
 }
 #pragma mark ===== laizyLoad  =====
 -(UIImageView *)bgIV
@@ -64,12 +67,18 @@
     {
         _webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, SafeAreaTopHeight + 20, SCREEN_WIDTH, SCREEN_HEIGHT - SafeAreaTopHeight - SafeAreaBottomHeight - 40)];
         _webView.delegate = self;
+        _webView.backgroundColor = [UIColor clearColor];
+        _webView.scrollView.backgroundColor = [UIColor clearColor];
         
         //使web和图片大小适配
+        [_webView setOpaque:NO];
         _webView.scalesPageToFit = YES;
         _webView.scrollView.scrollEnabled = NO;
         
         [self.view addSubview:_webView];
+        
+        //隐藏背景图 bgIV和webView两者存一，webView没有bgIV宽，防止两图同时显示的尴尬
+        _bgIV.hidden = YES;
     }
     return _webView;
 }
@@ -118,10 +127,34 @@
 
     float w = webSize.width / contentSize.width , h = webSize.height / contentSize.height, zoom;
 
-    zoom = w > h ? w : h;
+    zoom = w < h ? w : h;
     webView.scrollView.minimumZoomScale = zoom;
     webView.scrollView.maximumZoomScale = zoom;
     webView.scrollView.zoomScale = zoom;
+    
+    for (UIView *browserView in webView.scrollView.subviews)
+    {
+        if ([browserView isKindOfClass:[NSClassFromString(@"UIWebBrowserView") class]])
+        {
+            browserView.frame = CGRectMake(0, 0, webView.scrollView.frame.size.width, webView.scrollView.frame.size.height);
+        }
+    }
+}
+#pragma mark ===== kvo 监听bgIV是否显示 =====
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"hidden"])
+    {
+        BOOL bgIsHidden = [[change valueForKey:NSKeyValueChangeNewKey] boolValue];
+        if (bgIsHidden)
+        {
+            _webView.hidden = NO;
+        }
+        else
+        {
+            _webView.hidden = YES;
+        }
+    }
 }
 #pragma mark ===== tool =====
 -(void)getGifData:(NSDictionary *)info//获取图片并写入文件中
