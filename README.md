@@ -47,3 +47,5 @@
     }
 
 ```
+
+![展示图片](https://github.com/diankuanghuolong/HaiLookGif/blob/master/HaiLookGif/showImages/gifLook.gif)
