@@ -67,11 +67,13 @@
     {
         _webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, SafeAreaTopHeight + 20, SCREEN_WIDTH, SCREEN_HEIGHT - SafeAreaTopHeight - SafeAreaBottomHeight - 40)];
         _webView.delegate = self;
+        
+        //清楚背景色
         _webView.backgroundColor = [UIColor clearColor];
         _webView.scrollView.backgroundColor = [UIColor clearColor];
         
         //使web和图片大小适配
-        [_webView setOpaque:NO];
+        [_webView setOpaque:NO];//边界不透明视图填充设为NO，否则[UIColor clearColor];无效
         _webView.scalesPageToFit = YES;
         _webView.scrollView.scrollEnabled = NO;
         
@@ -132,6 +134,7 @@
     webView.scrollView.maximumZoomScale = zoom;
     webView.scrollView.zoomScale = zoom;
     
+    //调整web的预览视图大小和web一致
     for (UIView *browserView in webView.scrollView.subviews)
     {
         if ([browserView isKindOfClass:[NSClassFromString(@"UIWebBrowserView") class]])
