@@ -1,6 +1,8 @@
 # HaiLookGif
 浏览iphone相册中gif图片
 
+[简书](https://www.jianshu.com/p/e28f803f2888)
+
 >概述：
     由于iphone相册不支持gif浏览，虽然gif是静止图但是保存的是gif格式。
     这里大概讲下我的思路：
