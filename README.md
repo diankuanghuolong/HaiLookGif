@@ -11,8 +11,7 @@
                 _webView.scalesPageToFit = YES;
                 _webView.scrollView.scrollEnabled = NO;
 - 4.最后，在appDelegate中，设置程序打开及退出时，删除本地保存的图片。
-    
-## How To Get Started
+
 ## 通过assetslibrary 框架获取相册中gif图片(注意获取gif图片需要将其转换为data，直接获取图片是第一帧的静止图片。)
     
 ```
