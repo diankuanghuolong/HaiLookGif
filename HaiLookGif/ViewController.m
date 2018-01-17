@@ -46,7 +46,6 @@
     //kvo
     [_bgIV addObserver:self forKeyPath:@"hidden" options:NSKeyValueObservingOptionNew context:nil];
 }
-
 #pragma mark ===== laizyLoad  =====
 -(UIImageView *)bgIV
 {
@@ -122,37 +121,25 @@
     }];
 }
 #pragma mark ===== webDelegate =====
+-(void)webViewDidStartLoad:(UIWebView *)webView
+{
+    //初始化缩放值
+    webView.scrollView.minimumZoomScale = 1;
+    webView.scrollView.maximumZoomScale = 1;
+    webView.scrollView.zoomScale = 1;
+}
 -(void)webViewDidFinishLoad:(UIWebView *)webView
 {
     //使web和图片大小适配
     CGSize contentSize = webView.scrollView.contentSize;
     CGSize webSize = _webView.bounds.size;
 
-    float w = webSize.width / contentSize.width , h = webSize.height / contentSize.height, zoom;
-
-    zoom = contentSize.width > contentSize.height ? w : h;
+    float w = webSize.width / contentSize.width , h = webSize.height / contentSize.height,zoom;
+    
+    zoom = contentSize.width < contentSize.height ? w : h;
     webView.scrollView.minimumZoomScale = zoom;
     webView.scrollView.maximumZoomScale = zoom;
     webView.scrollView.zoomScale = zoom;
-
-    webView.scrollView.contentSize = CGSizeMake(SCREEN_WIDTH, SCREEN_HEIGHT);
-    
-    //调整web的预览视图大小和web一致
-    UIView *browserView = self.webView.scrollView.subviews[0];
-    CGRect frame = browserView.frame;
-    
-    frame.origin.x = 0;
-    frame.origin.y = 0;
-    frame.size.width = SCREEN_WIDTH;
-    frame.size.height = SCREEN_HEIGHT - SafeAreaTopHeight - SafeAreaBottomHeight - 40;
-    browserView.frame = frame;
-    CGRect bounds = browserView.bounds;
-    bounds.origin.x = 0;
-    bounds.origin.y = 0;
-    bounds.size.width  = frame.size.width;
-    bounds.size.height = frame.size.height;
-    browserView.bounds = bounds;
-    NSLog(@"frame  === %@,bounds  ====%@",NSStringFromCGRect(frame),NSStringFromCGRect(bounds));
 }
 #pragma mark ===== kvo 监听bgIV是否显示 =====
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context
@@ -206,5 +193,9 @@
     NSString *imgPath = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingFormat:@"/imgData"];
     NSLog(@"imgPath== %@",imgPath);
     return imgPath;
+}
+-(void)dealloc
+{
+    [_bgIV removeObserver:self forKeyPath:@"hidden"];
 }
 @end
