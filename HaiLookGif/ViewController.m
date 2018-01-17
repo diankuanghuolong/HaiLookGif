@@ -46,6 +46,7 @@
     //kvo
     [_bgIV addObserver:self forKeyPath:@"hidden" options:NSKeyValueObservingOptionNew context:nil];
 }
+
 #pragma mark ===== laizyLoad  =====
 -(UIImageView *)bgIV
 {
@@ -98,6 +99,7 @@
 -(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
 //    UIImage * editedImage = [info objectForKey:UIImagePickerControllerOriginalImage];
+
      [self getGifData:info];//-----获取图片并写入文件中
     
     [self dismissViewControllerAnimated:YES completion:^() {
@@ -122,26 +124,35 @@
 #pragma mark ===== webDelegate =====
 -(void)webViewDidFinishLoad:(UIWebView *)webView
 {
-    
     //使web和图片大小适配
     CGSize contentSize = webView.scrollView.contentSize;
     CGSize webSize = _webView.bounds.size;
 
     float w = webSize.width / contentSize.width , h = webSize.height / contentSize.height, zoom;
 
-    zoom = w < h ? w : h;
+    zoom = contentSize.width > contentSize.height ? w : h;
     webView.scrollView.minimumZoomScale = zoom;
     webView.scrollView.maximumZoomScale = zoom;
     webView.scrollView.zoomScale = zoom;
+
+    webView.scrollView.contentSize = CGSizeMake(SCREEN_WIDTH, SCREEN_HEIGHT);
     
     //调整web的预览视图大小和web一致
-    for (UIView *browserView in webView.scrollView.subviews)
-    {
-        if ([browserView isKindOfClass:[NSClassFromString(@"UIWebBrowserView") class]])
-        {
-            browserView.frame = CGRectMake(0, 0, webView.scrollView.frame.size.width, webView.scrollView.frame.size.height);
-        }
-    }
+    UIView *browserView = self.webView.scrollView.subviews[0];
+    CGRect frame = browserView.frame;
+    
+    frame.origin.x = 0;
+    frame.origin.y = 0;
+    frame.size.width = SCREEN_WIDTH;
+    frame.size.height = SCREEN_HEIGHT - SafeAreaTopHeight - SafeAreaBottomHeight - 40;
+    browserView.frame = frame;
+    CGRect bounds = browserView.bounds;
+    bounds.origin.x = 0;
+    bounds.origin.y = 0;
+    bounds.size.width  = frame.size.width;
+    bounds.size.height = frame.size.height;
+    browserView.bounds = bounds;
+    NSLog(@"frame  === %@,bounds  ====%@",NSStringFromCGRect(frame),NSStringFromCGRect(bounds));
 }
 #pragma mark ===== kvo 监听bgIV是否显示 =====
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context
@@ -181,6 +192,7 @@
         else {
             
             //未获取到gif
+            NSLog(@"未获取到gif");
         }
     };
     
