@@ -65,7 +65,7 @@
         UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectMake(x, 0, _sv.frame.size.width, _sv.frame.size.height)];
         webView.delegate = self;
         
-        //清楚背景色
+        //清除背景色
         webView.backgroundColor = [UIColor clearColor];
         webView.scrollView.backgroundColor = [UIColor clearColor];
         
@@ -77,9 +77,10 @@
         [_sv addSubview:webView];
         _webView = webView;
         
-        NSURL *url = [[_imagesAssetArray[i] defaultRepresentation] url];
+        ALAssetRepresentation *representation = [_imagesAssetArray[i] defaultRepresentation];
+        NSURL *photoUrl = [representation url];
 //        NSLog(@"url == %@",url);
-        [self getGifData:url forWeb:webView];//获取图片并加载到web上，然后将web加到_sv上
+        [self getGifData:photoUrl forWeb:webView];//获取图片并加载到web上，然后将web加到_sv上
         
         x += SCREEN_WIDTH;
     }
@@ -89,32 +90,29 @@
 {
     _assetsLibrary = [[ALAssetsLibrary alloc] init];
     _albumsArray = [[NSMutableArray alloc] init];
-    dispatch_async(dispatch_get_main_queue(), ^{
-
-        [_assetsLibrary enumerateGroupsWithTypes:ALAssetsGroupAll usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
-            if (group) {
-                [group setAssetsFilter:[ALAssetsFilter allPhotos]];
-                if (group.numberOfAssets > 0) {
-                    // 把相册储存到数组中，方便后面展示相册时使用
-                    [_albumsArray addObject:group];
-//                    NSLog(@"_albumsArray == %@",_albumsArray);
-                    
-                    [self getImgArr];
-                }
-            } else {
-                if ([_albumsArray count] > 0) {
-                    // 把所有的相册储存完毕，可以展示相册列表
-                } else {
-                    // 没有任何有资源的相册，输出提示
-                    NSLog(@"没有相册内容");
-                }
+    [_assetsLibrary enumerateGroupsWithTypes:ALAssetsGroupAll usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
+        if (group) {
+            //只读图片
+            [group setAssetsFilter:[ALAssetsFilter allPhotos]];
+            
+            if (group.numberOfAssets > 0) {
+                // 把相册储存到数组中，方便后面展示相册时使用
+                [_albumsArray addObject:group];
+                //                    NSLog(@"_albumsArray == %@",_albumsArray);
+                
+                [self getImgArr];
             }
-        } failureBlock:^(NSError *error) {
-            NSLog(@"Asset group not found!\n");
-        }];
-        
-    });
-
+        } else {
+            if ([_albumsArray count] > 0) {
+                // 把所有的相册储存完毕，可以展示相册列表
+            } else {
+                // 没有任何有资源的相册，输出提示
+                NSLog(@"没有相册内容");
+            }
+        }
+    } failureBlock:^(NSError *error) {
+        NSLog(@"Asset group not found!\n");
+    }];
 }
 -(void)getImgArr
 {
@@ -124,8 +122,9 @@
         ALAssetsGroup *group = _albumsArray[i];
         [group enumerateAssetsWithOptions:NSEnumerationReverse usingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
             if (result) {
+                
                 [_imagesAssetArray addObject:result];
-//                NSLog(@"_imagesAssetArray == %@",_imagesAssetArray);
+                NSLog(@"_imagesAssetArray == %@",_imagesAssetArray);
             } else {
                 // result 为 nil，即遍历相片或视频完毕，可以展示资源列表
             }
@@ -156,10 +155,9 @@
     webView.scrollView.zoomScale = zoom;
 }
 #pragma mark ===== tool =====
--(void)getGifData:(NSURL *)url forWeb:(UIWebView *)webView//获取图片并写入文件中
+-(void)getGifData:(NSURL *)url forWeb:(UIWebView *)webView//获取图片
 {
     NSURL *imageRefURL = url;
-    
     void (^ALAssetsLibraryAssetForURLResultBlock)(ALAsset *) = ^(ALAsset *asset) {
         
         if (asset != nil) {
@@ -187,6 +185,8 @@
     [_assetsLibrary assetForURL:imageRefURL
                    resultBlock:ALAssetsLibraryAssetForURLResultBlock
                   failureBlock:^(NSError *error){
+                      NSLog(@"error == %@",error);
                   }];
 }
+
 @end
