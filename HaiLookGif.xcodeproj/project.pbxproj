@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B65ACCC920103CBD00E65A87 /* ShowAllPhotosVC.m in Sources */ = {isa = PBXBuildFile; fileRef = B65ACCC820103CBD00E65A87 /* ShowAllPhotosVC.m */; };
 		B6BE784B20088DA3004C11EC /* openPhothShop@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B6BE784A20088DA3004C11EC /* openPhothShop@2x.png */; };
 		B6BE784E20089A20004C11EC /* gifLook.gif in Resources */ = {isa = PBXBuildFile; fileRef = B6BE784D20089A20004C11EC /* gifLook.gif */; };
 		B6EDB4DB20075087003315BA /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B6EDB4DA20075087003315BA /* AppDelegate.m */; };
@@ -18,6 +19,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B65ACCC720103CBD00E65A87 /* ShowAllPhotosVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShowAllPhotosVC.h; sourceTree = "<group>"; };
+		B65ACCC820103CBD00E65A87 /* ShowAllPhotosVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShowAllPhotosVC.m; sourceTree = "<group>"; };
 		B6BE78442008794A004C11EC /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
 		B6BE78452008794A004C11EC /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		B6BE784A20088DA3004C11EC /* openPhothShop@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "openPhothShop@2x.png"; sourceTree = "<group>"; };
@@ -76,6 +79,8 @@
 				B6EDB4DA20075087003315BA /* AppDelegate.m */,
 				B6EDB4DC20075087003315BA /* ViewController.h */,
 				B6EDB4DD20075087003315BA /* ViewController.m */,
+				B65ACCC720103CBD00E65A87 /* ShowAllPhotosVC.h */,
+				B65ACCC820103CBD00E65A87 /* ShowAllPhotosVC.m */,
 				B6BE784A20088DA3004C11EC /* openPhothShop@2x.png */,
 				B6BE784C20089940004C11EC /* showImages */,
 				B6EDB4DF20075087003315BA /* Main.storyboard */,
@@ -161,6 +166,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B6EDB4DE20075087003315BA /* ViewController.m in Sources */,
+				B65ACCC920103CBD00E65A87 /* ShowAllPhotosVC.m in Sources */,
 				B6EDB4E920075087003315BA /* main.m in Sources */,
 				B6EDB4DB20075087003315BA /* AppDelegate.m in Sources */,
 			);

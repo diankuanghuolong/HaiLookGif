@@ -9,7 +9,7 @@
 #import "ViewController.h"
 #import <WebKit/WebKit.h>
 #import <AssetsLibrary/AssetsLibrary.h>
-
+#import "ShowAllPhotosVC.h"
 /*
  定义宽高、安全距离
  */
@@ -21,6 +21,7 @@
 #define SafeAreaBottomHeight (SCREEN_HEIGHT == 812.0 ? 34 : 0)  //-----底部安全距离
 
 @interface ViewController ()<UINavigationControllerDelegate, UIImagePickerControllerDelegate,UIWebViewDelegate>
+
 @property (nonatomic ,strong)UIImageView *bgIV;
 @property (nonatomic ,strong)UIWebView *webView;
 
@@ -35,12 +36,21 @@
     
     [self.view addSubview:self.bgIV];
     
-    UIButton *rightBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 80, 30)];
-    [rightBtn setTitle:@"打开相册" forState:UIControlStateNormal];
+    UIButton *leftBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 80, 30)];
+    [leftBtn setTitle:@"打开相册" forState:UIControlStateNormal];
+    [leftBtn setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+    leftBtn.titleLabel.font = [UIFont boldSystemFontOfSize:14];
+    [leftBtn addTarget:self action:@selector(openPhotoShop) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *leftBbi = [[UIBarButtonItem alloc] initWithCustomView:leftBtn];
+    self.navigationItem.leftBarButtonItem = leftBbi;
+    
+    UIButton *rightBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 120, 30)];
+    [rightBtn setTitle:@"显示所有相片" forState:UIControlStateNormal];
     [rightBtn setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
     rightBtn.titleLabel.font = [UIFont boldSystemFontOfSize:14];
-    [rightBtn addTarget:self action:@selector(openPhotoShop) forControlEvents:UIControlEventTouchUpInside];
+    [rightBtn addTarget:self action:@selector(showAllPhotos:) forControlEvents:UIControlEventTouchUpInside];
     UIBarButtonItem *rightBbi = [[UIBarButtonItem alloc] initWithCustomView:rightBtn];
+    
     self.navigationItem.rightBarButtonItem = rightBbi;
     
     //kvo
@@ -85,6 +95,11 @@
     return _webView;
 }
 #pragma mark  ===== action =====
+-(void)showAllPhotos:(id)sender
+{
+    ShowAllPhotosVC *showAllPhotosVC = [ShowAllPhotosVC new];
+    [self.navigationController pushViewController:showAllPhotosVC animated:YES];
+}
 -(void)openPhotoShop
 {
     UIImagePickerController *picker = [[UIImagePickerController alloc] init];
@@ -194,6 +209,7 @@
     NSLog(@"imgPath== %@",imgPath);
     return imgPath;
 }
+
 -(void)dealloc
 {
     [_bgIV removeObserver:self forKeyPath:@"hidden"];
