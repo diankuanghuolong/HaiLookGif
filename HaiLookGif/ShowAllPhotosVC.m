@@ -122,7 +122,13 @@
         [_centerWebView setOpaque:NO];//边界不透明视图填充设为NO，否则[UIColor clearColor];无效
         _centerWebView.scalesPageToFit = YES;
         _centerWebView.scrollView.scrollEnabled = NO;
-        _centerWebView.scrollView.userInteractionEnabled = NO;
+        
+        UIView * browserView = _centerWebView.scrollView.subviews[0];
+        browserView.userInteractionEnabled = YES;
+        
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didClickAction:)];
+        [browserView addGestureRecognizer:tap];
+        
     }
     return _centerWebView;
 }
@@ -168,6 +174,10 @@
     NSURL *photoUrl = [representation url];
     //        NSLog(@"url == %@",url);
     [self getGifData:photoUrl forWeb:_centerWebView];//获取图片并加载到web上
+}
+-(void)didClickAction:(id)sender
+{
+    NSLog(@"click");
 }
 #pragma mark ===== getDatas  =====
 -(void)getGroupArray
