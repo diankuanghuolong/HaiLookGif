@@ -26,10 +26,16 @@
     NSMutableArray *_albumsArray;//相册组数组
     NSMutableArray *_imagesAssetArray;//相片数组
     
-    UIWebView *_webView;
+    NSInteger _leftCurIndex;//左边webView当前的序号
+    NSInteger _centerCurIndex;//中间webView当前的序号
+    NSInteger _rightCurIndex;//右边webView当前的序号
 }
 @property (nonatomic ,strong)UIScrollView *sv;
 @property (nonatomic ,strong)UIPageControl *pageC;
+
+@property (nonatomic ,strong)UIWebView *leftWebView;
+@property (nonatomic ,strong)UIWebView *centerWebView;
+@property (nonatomic ,strong)UIWebView *rightWebView;
 @end
 
 @implementation ShowAllPhotosVC
@@ -40,50 +46,120 @@
     self.title = @"查看所有图片";
     self.view.backgroundColor = [UIColor whiteColor];
     
+    if(@available(iOS 11.0, *))
+    {
+        _sv.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+        
+    } else
+    {
+        self.automaticallyAdjustsScrollViewInsets = NO;
+    }
+    
     [self getGroupArray];//获取所有图片
     [self.view addSubview:self.sv];
 }
-
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    // 禁用返回手势
+    if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
+        self.navigationController.interactivePopGestureRecognizer.enabled = NO;
+    }
+}
 #pragma mark ===== laizyLoad  =====
 -(UIScrollView *)sv
 {
     if (!_sv)
     {
-        _sv = [[UIScrollView alloc] initWithFrame:CGRectMake(0, SafeAreaTopHeight + 20, SCREEN_WIDTH, SCREEN_HEIGHT - SafeAreaTopHeight - SafeAreaBottomHeight - 40)];
+        _sv = [[UIScrollView alloc] initWithFrame:CGRectMake(0, SafeAreaTopHeight, SCREEN_WIDTH, SCREEN_HEIGHT - SafeAreaTopHeight)];
         _sv.delegate = self;
         _sv.pagingEnabled = YES;
         _sv.showsHorizontalScrollIndicator = NO;
+        _sv.contentSize = CGSizeMake(SCREEN_WIDTH * 3, 0);
+        _sv.contentOffset = CGPointMake(SCREEN_WIDTH, 0);
     }
     return _sv;
 }
--(void)updateSV
+-(UIWebView *)leftWebView
 {
-    _sv.contentSize = CGSizeMake(SCREEN_WIDTH * _imagesAssetArray.count, 0);
-    CGFloat x = 0;
-    for (int i = 0; i < _imagesAssetArray.count; i ++)
+    if (!_leftWebView)
     {
-        UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectMake(x, 0, _sv.frame.size.width, _sv.frame.size.height)];
-        webView.delegate = self;
+        _leftWebView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, _sv.frame.size.width, _sv.frame.size.height)];
+        _leftWebView.delegate = self;
         
         //清除背景色
-        webView.backgroundColor = [UIColor clearColor];
-        webView.scrollView.backgroundColor = [UIColor clearColor];
+        _leftWebView.backgroundColor = [UIColor clearColor];
+        _leftWebView.scrollView.backgroundColor = [UIColor clearColor];
         
         //使web和图片大小适配
-        [webView setOpaque:NO];//边界不透明视图填充设为NO，否则[UIColor clearColor];无效
-        webView.scalesPageToFit = YES;
-        webView.scrollView.scrollEnabled = NO;
-        
-        [_sv addSubview:webView];
-        _webView = webView;
-        
-        ALAssetRepresentation *representation = [_imagesAssetArray[i] defaultRepresentation];
-        NSURL *photoUrl = [representation url];
-//        NSLog(@"url == %@",url);
-        [self getGifData:photoUrl forWeb:webView];//获取图片并加载到web上，然后将web加到_sv上
-        
-        x += SCREEN_WIDTH;
+        [_leftWebView setOpaque:NO];//边界不透明视图填充设为NO，否则[UIColor clearColor];无效
+        _leftWebView.scalesPageToFit = YES;
+        _leftWebView.scrollView.scrollEnabled = NO;
+        _leftWebView.scrollView.userInteractionEnabled = NO;
     }
+    return  _leftWebView;
+}
+-(UIWebView *)centerWebView
+{
+    if (!_centerWebView)
+    {
+        _centerWebView = [[UIWebView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH, 0, _sv.frame.size.width, _sv.frame.size.height)];
+        _centerWebView.delegate = self;
+        
+        //清除背景色
+        _centerWebView.backgroundColor = [UIColor clearColor];
+        _centerWebView.scrollView.backgroundColor = [UIColor clearColor];
+        
+        //使web和图片大小适配
+        [_centerWebView setOpaque:NO];//边界不透明视图填充设为NO，否则[UIColor clearColor];无效
+        _centerWebView.scalesPageToFit = YES;
+        _centerWebView.scrollView.scrollEnabled = NO;
+        _centerWebView.scrollView.userInteractionEnabled = NO;
+    }
+    return _centerWebView;
+}
+-(UIWebView *)rightWebView
+{
+    if (!_rightWebView)
+    {
+        _rightWebView = [[UIWebView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH*2, 0, _sv.frame.size.width, _sv.frame.size.height)];
+        _rightWebView.delegate = self;
+        
+        //清除背景色
+        _rightWebView.backgroundColor = [UIColor clearColor];
+        _rightWebView.scrollView.backgroundColor = [UIColor clearColor];
+        
+        //使web和图片大小适配
+        [_rightWebView setOpaque:NO];//边界不透明视图填充设为NO，否则[UIColor clearColor];无效
+        _rightWebView.scalesPageToFit = YES;
+        _rightWebView.scrollView.scrollEnabled = NO;
+        _rightWebView.scrollView.userInteractionEnabled = NO;
+    }
+    return _rightWebView;
+}
+#pragma mark ===== action  =====
+-(void)updateSV
+{
+    //默认第_imagesAssetArray.count-1个
+    _leftCurIndex = _imagesAssetArray.count - 1;
+    //默认第0个
+    _centerCurIndex=0;
+    //默认第1个
+    _rightCurIndex=1;
+    
+    //左边的webView
+    [_sv addSubview:self.leftWebView];
+    
+    //中间的webView
+    [_sv addSubview:self.centerWebView];
+    
+    //右边的webView
+    [_sv addSubview:self.rightWebView];
+    
+    ALAssetRepresentation *representation = [_imagesAssetArray[_centerCurIndex] defaultRepresentation];
+    NSURL *photoUrl = [representation url];
+    //        NSLog(@"url == %@",url);
+    [self getGifData:photoUrl forWeb:_centerWebView];//获取图片并加载到web上
 }
 #pragma mark ===== getDatas  =====
 -(void)getGroupArray
@@ -133,6 +209,53 @@
     
     [self updateSV];
 }
+#pragma mark ===== scrollviewDelegate  =====
+-(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+{
+    CGFloat offsetX = scrollView.contentOffset.x;
+    //图片向左滑动，展示下一张图片
+    if (offsetX>SCREEN_WIDTH) {
+        _leftCurIndex++;
+        _centerCurIndex++;
+        _rightCurIndex++;
+        if (_leftCurIndex>_imagesAssetArray.count-1) {
+            _leftCurIndex=0;
+        }
+        if (_centerCurIndex>_imagesAssetArray.count-1) {
+            _centerCurIndex=0;
+        }
+        if (_rightCurIndex>_imagesAssetArray.count-1) {
+            _rightCurIndex=0;
+        }
+        //图片向右滑动，展示上一张图片
+    }else if (offsetX<SCREEN_WIDTH){
+        _leftCurIndex--;
+        _centerCurIndex--;
+        _rightCurIndex--;
+        if (_leftCurIndex<0) {
+            _leftCurIndex=_imagesAssetArray.count-1;
+        }
+        if (_centerCurIndex<0) {
+            _centerCurIndex=_imagesAssetArray.count-1;
+        }
+        if (_rightCurIndex<0) {
+            _rightCurIndex=_imagesAssetArray.count-1;
+        }
+    }
+
+//    //切换左，中，右三个位置上面的图片
+    NSURL *url_left = [[_imagesAssetArray[_leftCurIndex] defaultRepresentation] url];
+    [self getGifData:url_left forWeb:_leftWebView];//获取图片并加载到web上
+
+    NSURL *url_center = [[_imagesAssetArray[_centerCurIndex] defaultRepresentation] url];
+    [self getGifData:url_center forWeb:_centerWebView];//获取图片并加载到web上
+
+    NSURL *url_right = [[_imagesAssetArray[_rightCurIndex] defaultRepresentation] url];
+    [self getGifData:url_right forWeb:_rightWebView];//获取图片并加载到web上
+    
+    //scrollView滑动之后始终保持_centerImgView在正中间
+    scrollView.contentOffset = CGPointMake(SCREEN_WIDTH, 0);
+}
 #pragma mark ===== webDelegate =====
 -(void)webViewDidStartLoad:(UIWebView *)webView
 {
@@ -145,7 +268,7 @@
 {
     //使web和图片大小适配
     CGSize contentSize = webView.scrollView.contentSize;
-    CGSize webSize = _webView.bounds.size;
+    CGSize webSize = webView.bounds.size;
     
     float w = webSize.width / contentSize.width , h = webSize.height / contentSize.height,zoom;
     
