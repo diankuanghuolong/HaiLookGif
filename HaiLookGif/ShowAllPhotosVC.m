@@ -29,6 +29,8 @@
     NSInteger _leftCurIndex;//左边webView当前的序号
     NSInteger _centerCurIndex;//中间webView当前的序号
     NSInteger _rightCurIndex;//右边webView当前的序号
+    
+    UIView *tempView;//web截图
 }
 @property (nonatomic ,strong)UIScrollView *sv;
 @property (nonatomic ,strong)UIPageControl *pageC;
@@ -55,7 +57,7 @@
         self.automaticallyAdjustsScrollViewInsets = NO;
     }
     /*
-        最求完美的用户体验，是我们的职业素养。每一个功能都可以通过不同的方法实现，但是，程序员的职责是寻找最优雅的一种。
+        追求完美的用户体验，是我们的职业素养。每一个功能都可以通过不同的方法实现，但是，程序员的职责是寻找最优雅的一种。
         如果说，教育的目的，当是传递生命的气息。
         那么，编程的目的，当是书写心灵的诗句。
      
@@ -233,6 +235,17 @@
         if (_rightCurIndex>_imagesAssetArray.count-1) {
             _rightCurIndex=0;
         }
+        
+        //切换左，中，右三个位置上面的图片
+        NSURL *url_left = [[_imagesAssetArray[_leftCurIndex] defaultRepresentation] url];
+        [self getGifData:url_left forWeb:_leftWebView];//获取图片并加载到web上
+        
+        NSURL *url_center = [[_imagesAssetArray[_centerCurIndex] defaultRepresentation] url];
+        [self getGifData:url_center forWeb:_centerWebView];//获取图片并加载到web上
+        
+        NSURL *url_right = [[_imagesAssetArray[_rightCurIndex] defaultRepresentation] url];
+        [self getGifData:url_right forWeb:_rightWebView];//获取图片并加载到web上
+        
         //图片向右滑动，展示上一张图片
     }else if (offsetX<SCREEN_WIDTH){
         _leftCurIndex--;
@@ -247,19 +260,19 @@
         if (_rightCurIndex<0) {
             _rightCurIndex=_imagesAssetArray.count-1;
         }
+        
+        //切换左，中，右三个位置上面的图片
+        NSURL *url_left = [[_imagesAssetArray[_leftCurIndex] defaultRepresentation] url];
+        [self getGifData:url_left forWeb:_leftWebView];//获取图片并加载到web上
+
+        NSURL *url_center = [[_imagesAssetArray[_centerCurIndex] defaultRepresentation] url];
+        [self getGifData:url_center forWeb:_centerWebView];//获取图片并加载到web上
+
+        NSURL *url_right = [[_imagesAssetArray[_rightCurIndex] defaultRepresentation] url];
+        [self getGifData:url_right forWeb:_rightWebView];//获取图片并加载到web上
     }
 
-//    //切换左，中，右三个位置上面的图片
-    NSURL *url_left = [[_imagesAssetArray[_leftCurIndex] defaultRepresentation] url];
-    [self getGifData:url_left forWeb:_leftWebView];//获取图片并加载到web上
-
-    NSURL *url_center = [[_imagesAssetArray[_centerCurIndex] defaultRepresentation] url];
-    [self getGifData:url_center forWeb:_centerWebView];//获取图片并加载到web上
-
-    NSURL *url_right = [[_imagesAssetArray[_rightCurIndex] defaultRepresentation] url];
-    [self getGifData:url_right forWeb:_rightWebView];//获取图片并加载到web上
-    
-    //scrollView滑动之后始终保持_centerImgView在正中间
+    //scrollView滑动之后始终保持_centerWebView在正中间
     scrollView.contentOffset = CGPointMake(SCREEN_WIDTH, 0);
 }
 #pragma mark ===== webDelegate =====
@@ -275,9 +288,9 @@
     //使web和图片大小适配
     CGSize contentSize = webView.scrollView.contentSize;
     CGSize webSize = webView.bounds.size;
-    
+
     float w = webSize.width / contentSize.width , h = webSize.height / contentSize.height,zoom;
-    
+
     zoom = contentSize.width < contentSize.height ? w : h;
     webView.scrollView.minimumZoomScale = zoom;
     webView.scrollView.maximumZoomScale = zoom;

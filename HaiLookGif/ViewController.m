@@ -75,7 +75,7 @@
 {
     if (!_webView)
     {
-        _webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, SafeAreaTopHeight + 20, SCREEN_WIDTH, SCREEN_HEIGHT - SafeAreaTopHeight - SafeAreaBottomHeight - 40)];
+        _webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, SafeAreaTopHeight, SCREEN_WIDTH, SCREEN_HEIGHT - SafeAreaTopHeight)];
         _webView.delegate = self;
         
         //清楚背景色
