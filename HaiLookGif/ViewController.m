@@ -21,9 +21,7 @@
 #define SafeAreaBottomHeight (SCREEN_HEIGHT == 812.0 ? 34 : 0)  //-----底部安全距离
 
 @interface ViewController ()<UINavigationControllerDelegate, UIImagePickerControllerDelegate,UIWebViewDelegate>
-{
-    UIBackgroundTaskIdentifier _bgTask;
-}
+
 @property (nonatomic ,strong)UIImageView *bgIV;
 @property (nonatomic ,strong)UIWebView *webView;
 
@@ -35,11 +33,6 @@
 {
     [super viewDidLoad];
     self.title = @"浏览相册中GIF";
-    
-    
-    //后台保活
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(appGoToBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
-    
     
     [self.view addSubview:self.bgIV];
     
@@ -62,6 +55,10 @@
     
     //kvo
     [_bgIV addObserver:self forKeyPath:@"hidden" options:NSKeyValueObservingOptionNew context:nil];
+}
+-(void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
 }
 #pragma mark ===== laizyLoad  =====
 -(UIImageView *)bgIV
@@ -216,33 +213,9 @@
     NSLog(@"imgPath== %@",imgPath);
     return imgPath;
 }
-#pragma mark ===== NotificationCenter =====
-- (void)appGoToBackground:(NSNotification *)sender
-{
-    UIApplication *app = [UIApplication sharedApplication];
-    __block  UIBackgroundTaskIdentifier _bgTask;
-    _bgTask = [app beginBackgroundTaskWithExpirationHandler:^{
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (_bgTask != UIBackgroundTaskInvalid)
-            {
-                _bgTask = UIBackgroundTaskInvalid;
-            }
-        });
-    }];
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (_bgTask != UIBackgroundTaskInvalid)
-            {
-                _bgTask = UIBackgroundTaskInvalid;
-            }
-        });
-    });
-}
 
 -(void)dealloc
 {
     [_bgIV removeObserver:self forKeyPath:@"hidden"];
-    [[UIApplication sharedApplication] endBackgroundTask:_bgTask];
-    _bgTask = UIBackgroundTaskInvalid;
 }
 @end

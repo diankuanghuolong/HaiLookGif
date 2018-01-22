@@ -30,13 +30,13 @@
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     
-    [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^(){
-
-         //程序在10分钟内未被系统关闭或者强制关闭，则程序会调用此代码块，可以在这里做一些保存或者清理工作
-        [self removeFile];
-//        NSLog(@"程序关闭");
-
-     }];
+//    [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^(){
+//
+//         //程序在10分钟内未被系统关闭或者强制关闭，则程序会调用此代码块，可以在这里做一些保存或者清理工作
+//        [self removeFile];
+////        NSLog(@"程序关闭");
+//
+//     }];
 }
 
 
