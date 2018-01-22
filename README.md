@@ -62,7 +62,7 @@
 
 1.通过 -(void)getGroupArray; 方法和 -(void)getImgArr;方法，获取相册中各组相册和相册中所有图片;
 
-2.-(void)getGifData:(NSURL *)url forWeb:(UIWebView *)webView//获取图片并加载;
+2.-(void)getGifData:(NSURL *)url forWeb:(UIWebView *)webView;//获取图片并加载;
 
 3.创建三个webview，加载到scrollview上，并通过三图实现无限轮播（模拟器可以不这样做，但是手机的话，相册中图片数量可能很大，会导致内存问题。）
 
