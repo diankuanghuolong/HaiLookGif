@@ -50,4 +50,20 @@
 
 ```
 
+## ShowAllPhotosVC 部分：（查看所有图片）
+
+/*
+        追求完美的用户体验，是我们的职业素养。每一个功能都可以通过不同的方法实现，但是，程序员的职责是寻找最优雅的一种。
+        如果说，教育的目的，当是传递生命的气息。
+        那么，编程的目的，当是书写心灵的诗句。
+     
+        [self getGroupArray];//获取所有图片------这里只为效果，实际中，获取图片当在进入此页面前就完成，避免用户进入当前页面的等待时间。
+*/
+
+1.通过 -(void)getGroupArray; 方法和 -(void)getImgArr;方法，获取相册中各组相册和相册中所有图片;
+2.-(void)getGifData:(NSURL *)url forWeb:(UIWebView *)webView//获取图片并加载;
+3.创建三个webview，加载到scrollview上，并通过三图实现无限轮播（模拟器可以不这样做，但是手机的话，相册中图片数量可能很大，会导致内存问题。）
+4.但是还有个问题，就是滑动切换图片的时候，会有闪烁。（可能是在tup适配web大小的方法中的问题：|-(void)webViewDidStartLoad:(UIWebView *)webView;中和方法：-(void)webViewDidFinishLoad:(UIWebView *)webView中|未解决。欢迎指教。）
+
+
 ![展示图片](https://github.com/diankuanghuolong/HaiLookGif/blob/master/HaiLookGif/showImages/gifLook.gif)
