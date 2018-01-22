@@ -4,7 +4,7 @@
 [简书](https://www.jianshu.com/p/e28f803f2888)
 
 >概述：
-    由于iphone相册不支持gif浏览，虽然gif是静止图但是保存的是gif格式。
+    iphone相册不支持gif浏览，虽然gif是静止图但是保存的是gif格式。
     这里大概讲下我的思路：
     
 - 1.先通过assetslibrary取得gif图片的data格式，然后保存到本地文件夹中（因为在 ALAssetsLibraryAssetForURLResultBlock外取的值为空，我用_ _block也不行，有其他方案的欢迎指教），然后当从相册取到图片并返回到你的控制器的时候（相册代理中的[self dismissViewControllerAnimated:YES completion:^() { }中），取得你保存在本地的imgData。
