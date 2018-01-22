@@ -21,32 +21,32 @@
         {
             NSURL *imageRefURL = [info valueForKey:UIImagePickerControllerReferenceURL];
     
-        ALAssetsLibrary *assetsLibrary = [[ALAssetsLibrary alloc] init];
-        __block NSData *imgData = nil;
-        void (^ALAssetsLibraryAssetForURLResultBlock)(ALAsset *) = ^(ALAsset *asset) {
-        
-        if (asset != nil) {
-        
-        ALAssetRepresentation *rep = [asset defaultRepresentation];
-        Byte *imageBuffer = (Byte*)malloc(rep.size);
-        NSUInteger bufferSize = [rep getBytes:imageBuffer fromOffset:0.0 length:rep.size error:nil];
-        NSData *imageData = [NSData dataWithBytesNoCopy:imageBuffer length:bufferSize freeWhenDone:YES];
-        
-        imgData = imageData;
-        [imgData writeToFile:[self getImgDataPath] atomically:YES];
-        //此处讲图片转为 data格式并保存到本地文件夹中，因为在这个block块结束时，ALAsset对象销毁，imageData所指向的是他对应的指针，也会销毁，在block外取值为空。
+            ALAssetsLibrary *assetsLibrary = [[ALAssetsLibrary alloc] init];
+            __block NSData *imgData = nil;
+            void (^ALAssetsLibraryAssetForURLResultBlock)(ALAsset *) = ^(ALAsset *asset) {
+
+            if (asset != nil) {
+
+            ALAssetRepresentation *rep = [asset defaultRepresentation];
+            Byte *imageBuffer = (Byte*)malloc(rep.size);
+            NSUInteger bufferSize = [rep getBytes:imageBuffer fromOffset:0.0 length:rep.size error:nil];
+            NSData *imageData = [NSData dataWithBytesNoCopy:imageBuffer length:bufferSize freeWhenDone:YES];
+
+            imgData = imageData;
+            [imgData writeToFile:[self getImgDataPath] atomically:YES];
+            //此处讲图片转为 data格式并保存到本地文件夹中，因为在这个block块结束时，ALAsset对象销毁，imageData所指向的是他对应的指针，也会销毁，在block外取值为空。
+            }
+            else {
+
+            //未获取到gif
+            }
+            };
+
+            [assetsLibrary assetForURL:imageRefURL
+            resultBlock:ALAssetsLibraryAssetForURLResultBlock
+            failureBlock:^(NSError *error){
+            }];
         }
-        else {
-        
-        //未获取到gif
-        }
-        };
-        
-        [assetsLibrary assetForURL:imageRefURL
-        resultBlock:ALAssetsLibraryAssetForURLResultBlock
-        failureBlock:^(NSError *error){
-        }];
-    }
 
 ```
 
