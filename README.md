@@ -3,6 +3,10 @@
 
 [![Github All Releases](https://img.shields.io/github/downloads/atom/atom/total.svg)](https://github.com/diankuanghuolong/HaiLookGif)
 
+.. image:: https://img.shields.io/github/downloads/atom/atom/v0.190.0/total.svg   :target: https://github.com/diankuanghuolong/HaiLookGif
+
+image:https://img.shields.io/github/downloads/atom/atom/v0.190.0/total.svg[Github Releases (by Release)]
+
 [简书](https://www.jianshu.com/p/e28f803f2888)
 
 >概述：
