@@ -1,7 +1,9 @@
 # HaiLookGif
 浏览iphone相册中gif图片
 
-[![Github All Releases](https://img.shields.io/github/downloads/atom/atom/total.svg)](https://github.com/diankuanghuolong/HaiLookGif)
+##[![Github All Releases](https://img.shields.io/github/downloads/atom/atom/total.svg)](https://github.com/diankuanghuolong/HaiLookGif)
+
+https://img.shields.io/cocoapods/dt/AFNetworking.svg
 
 [简书](https://www.jianshu.com/p/e28f803f2888)
 
