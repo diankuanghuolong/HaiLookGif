@@ -2,6 +2,7 @@
 浏览iphone相册中gif图片
 
 [![Github All Releases](https://img.shields.io/github/downloads/atom/atom/total.svg)](https://github.com/diankuanghuolong/HaiLookGif)
+[![Github Releases](https://img.shields.io/github/downloads/atom/atom/latest/total.svg)](https://github.com/diankuanghuolong/HaiLookGif)
 
 [简书](https://www.jianshu.com/p/e28f803f2888)
 
